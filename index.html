@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Special Message for Mayank ✨</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-glow: rgba(244, 63, 94, 0.45);
+            --secondary-glow: rgba(168, 85, 247, 0.35);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at 50% 20%, #1f1124 0%, #0d0914 55%, #050308 100%);
+            color: #f8fafc;
+            overflow-x: hidden;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .font-serif-luxury {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* Glassmorphism Card Effect */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.65),
+                        0 0 40px 0 rgba(244, 63, 94, 0.12);
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .glass-card.playing-glow {
+            border-color: rgba(244, 63, 94, 0.4);
+            box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.75),
+                        0 0 55px 0 rgba(244, 63, 94, 0.28),
+                        inset 0 0 20px rgba(244, 63, 94, 0.08);
+        }
+
+        /* Animated Glowing Ring around Play Button */
+        .pulse-ring {
+            position: absolute;
+            inset: -6px;
+            border-radius: 9999px;
+            background: linear-gradient(135deg, #fb7185, #c084fc, #f43f5e);
+            opacity: 0;
+            z-index: -1;
+            transition: opacity 0.4s ease;
+        }
+
+        .is-playing .pulse-ring {
+            opacity: 0.75;
+            animation: pulse-aura 2s infinite cubic-bezier(0.4, 0, 0.6, 1);
+        }
+
+        @keyframes pulse-aura {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 0.7;
+                filter: blur(8px);
+            }
+            50% {
+                transform: scale(1.12);
+                opacity: 0.35;
+                filter: blur(14px);
+            }
+        }
+
+        /* Equalizer Bars Animation */
+        .eq-bar {
+            width: 4px;
+            background: linear-gradient(to top, #f43f5e, #c084fc);
+            border-radius: 999px;
+            height: 6px;
+            transition: height 0.2s ease;
+        }
+
+        .is-playing .eq-bar-1 { animation: eq-bounce 0.8s ease-in-out infinite 0.1s; }
+        .is-playing .eq-bar-2 { animation: eq-bounce 0.7s ease-in-out infinite 0.25s; }
+        .is-playing .eq-bar-3 { animation: eq-bounce 0.9s ease-in-out infinite 0.05s; }
+        .is-playing .eq-bar-4 { animation: eq-bounce 0.6s ease-in-out infinite 0.35s; }
+        .is-playing .eq-bar-5 { animation: eq-bounce 0.85s ease-in-out infinite 0.15s; }
+        .is-playing .eq-bar-6 { animation: eq-bounce 0.75s ease-in-out infinite 0.3s; }
+        .is-playing .eq-bar-7 { animation: eq-bounce 0.65s ease-in-out infinite 0.2s; }
+
+        @keyframes eq-bounce {
+            0%, 100% { height: 6px; }
+            50% { height: 28px; }
+        }
+
+        /* Floating vinyl / heart icon rotation */
+        .spin-slow {
+            animation: spin 10s linear infinite;
+            animation-play-state: paused;
+        }
+        .is-playing .spin-slow {
+            animation-play-state: running;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Shimmering Text Gradient */
+        .text-shimmer {
+            background: linear-gradient(90deg, #fff1f2 0%, #fda4af 35%, #e879f9 70%, #fff1f2 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 5s linear infinite;
+        }
+
+        @keyframes shimmer {
+            to { background-position: 200% center; }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #09050d;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3b1c32;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body class="relative flex flex-col items-center justify-center min-h-screen px-4 py-8 sm:px-6 lg:px-8 select-none">
+
+    <!-- ==========================================
+         GITHUB PAGES READY AUDIO ELEMENT
+         Simply upload your song named "music.mp3" 
+         in the same repository folder as index.html!
+         ========================================== -->
+    <audio id="bg-music" src="music.mp3" preload="auto" loop></audio>
+
+    <!-- Background Interactive Particle Canvas -->
+    <canvas id="particles-canvas" class="fixed inset-0 pointer-events-none z-0"></canvas>
+
+    <!-- Ambient Background Blur Blobs -->
+    <div class="fixed top-10 left-1/4 w-64 h-64 bg-rose-600/20 rounded-full blur-[110px] pointer-events-none z-0"></div>
+    <div class="fixed bottom-10 right-1/4 w-72 h-72 bg-purple-600/20 rounded-full blur-[120px] pointer-events-none z-0"></div>
+
+    <!-- Main Minimal Container -->
+    <main id="app-wrapper" class="relative z-10 w-full max-w-sm sm:max-w-md mx-auto my-auto px-2">
+
+        <!-- Glassmorphism Card -->
+        <section id="main-card" class="glass-card rounded-[2.5rem] px-6 py-12 sm:px-10 sm:py-14 text-center relative overflow-hidden">
+            
+            <!-- Subtle Ambient Glows -->
+            <div class="absolute -top-16 -right-16 w-36 h-36 bg-gradient-to-br from-rose-500/25 to-purple-500/5 rounded-full blur-2xl pointer-events-none"></div>
+            <div class="absolute -bottom-16 -left-16 w-36 h-36 bg-gradient-to-tr from-purple-500/20 to-rose-500/5 rounded-full blur-2xl pointer-events-none"></div>
+
+            <!-- Decorative Music / Vinyl Disc -->
+            <div class="relative mx-auto w-20 h-20 sm:w-24 sm:h-24 mb-8 flex items-center justify-center">
+                <div class="absolute inset-0 rounded-full bg-gradient-to-tr from-rose-500/35 to-purple-500/35 blur-md"></div>
+                <div class="spin-slow relative w-full h-full rounded-full bg-gradient-to-tr from-rose-950 via-slate-900 to-purple-950 border-2 border-rose-400/40 flex items-center justify-center shadow-inner">
+                    <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full border border-white/10 flex items-center justify-center">
+                        <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-rose-500 to-purple-600 flex items-center justify-center shadow-md">
+                            <i class="fa-solid fa-music text-white text-xs sm:text-sm"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 1. Main Headline -->
+            <h1 class="font-serif-luxury text-3xl sm:text-4xl font-bold tracking-wide text-shimmer mb-8 leading-snug drop-shadow-sm">
+                Special Msg For Mayank
+            </h1>
+
+            <!-- Sleek Animated Audio Wave / Equalizer -->
+            <div class="flex items-end justify-center gap-1.5 h-9 mb-8" aria-hidden="true">
+                <div class="eq-bar eq-bar-1"></div>
+                <div class="eq-bar eq-bar-2"></div>
+                <div class="eq-bar eq-bar-3"></div>
+                <div class="eq-bar eq-bar-4"></div>
+                <div class="eq-bar eq-bar-5"></div>
+                <div class="eq-bar eq-bar-6"></div>
+                <div class="eq-bar eq-bar-7"></div>
+            </div>
+
+            <!-- 2. Play Button Directly Below -->
+            <div class="relative inline-block w-full max-w-[230px]">
+                <div class="pulse-ring"></div>
+                <button id="play-btn" type="button" 
+                    class="relative w-full py-4 px-8 rounded-full bg-gradient-to-r from-rose-500 via-pink-500 to-purple-600 hover:from-rose-400 hover:to-purple-500 active:scale-95 text-white font-semibold text-base sm:text-lg shadow-xl shadow-rose-500/30 flex items-center justify-center gap-3.5 transition-all duration-300 focus:outline-none">
+                    <span class="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center shadow-inner">
+                        <i id="play-icon" class="fa-solid fa-play text-sm translate-x-[1px]"></i>
+                    </span>
+                    <span id="play-text" class="tracking-wide">Play Music</span>
+                </button>
+            </div>
+
+        </section>
+    </main>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        (function () {
+            // DOM Elements
+            const audioEl = document.getElementById('bg-music');
+            const playBtn = document.getElementById('play-btn');
+            const playIcon = document.getElementById('play-icon');
+            const playText = document.getElementById('play-text');
+            const appWrapper = document.getElementById('app-wrapper');
+            const mainCard = document.getElementById('main-card');
+
+            let isPlaying = false;
+            let usingFallbackSynth = false;
+            let audioCtx = null;
+            let synthInterval = null;
+            let noteIndex = 0;
+
+            // Gentle Romantic Music Box / Piano Synth Fallback (when music.mp3 isn't uploaded yet)
+            const melodyNotes = [
+                { freq: 523.25, dur: 0.6 }, // C5
+                { freq: 659.25, dur: 0.6 }, // E5
+                { freq: 783.99, dur: 0.6 }, // G5
+                { freq: 739.99, dur: 0.6 }, // F#5
+                { freq: 659.25, dur: 0.9 }, // E5
+                { freq: 587.33, dur: 0.6 }, // D5
+                { freq: 659.25, dur: 0.6 }, // E5
+                { freq: 523.25, dur: 1.1 }, // C5
+                { freq: 440.00, dur: 0.6 }, // A4
+                { freq: 523.25, dur: 0.6 }, // C5
+                { freq: 659.25, dur: 0.6 }, // E5
+                { freq: 587.33, dur: 1.0 }  // D5
+            ];
+
+            function playSynthNote(freq, duration) {
+                if (!audioCtx) {
+                    const AudioContext = window.AudioContext || window.webkitAudioContext;
+                    audioCtx = new AudioContext();
+                }
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+
+                const now = audioCtx.currentTime;
+                const osc = audioCtx.createOscillator();
+                const subOsc = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(freq, now);
+
+                subOsc.type = 'triangle';
+                subOsc.frequency.setValueAtTime(freq / 2, now);
+
+                gainNode.gain.setValueAtTime(0.001, now);
+                gainNode.gain.exponentialRampToValueAtTime(0.14, now + 0.06);
+                gainNode.gain.exponentialRampToValueAtTime(0.0001, now + duration + 0.8);
+
+                osc.connect(gainNode);
+                subOsc.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+
+                osc.start(now);
+                subOsc.start(now);
+                osc.stop(now + duration + 0.85);
+                subOsc.stop(now + duration + 0.85);
+            }
+
+            function startFallbackSynth() {
+                usingFallbackSynth = true;
+                if (synthInterval) clearInterval(synthInterval);
+
+                const first = melodyNotes[noteIndex % melodyNotes.length];
+                playSynthNote(first.freq, first.dur);
+                noteIndex++;
+
+                synthInterval = setInterval(() => {
+                    if (!isPlaying) return;
+                    const note = melodyNotes[noteIndex % melodyNotes.length];
+                    playSynthNote(note.freq, note.dur);
+                    noteIndex++;
+                }, 620);
+            }
+
+            function stopFallbackSynth() {
+                if (synthInterval) {
+                    clearInterval(synthInterval);
+                    synthInterval = null;
+                }
+            }
+
+            // Update UI state when playing or paused
+            function updateUI(playing) {
+                isPlaying = playing;
+                if (playing) {
+                    appWrapper.classList.add('is-playing');
+                    mainCard.classList.add('playing-glow');
+                    playIcon.classList.remove('fa-play', 'translate-x-[1px]');
+                    playIcon.classList.add('fa-pause');
+                    playText.textContent = 'Pause';
+                } else {
+                    appWrapper.classList.remove('is-playing');
+                    mainCard.classList.remove('playing-glow');
+                    playIcon.classList.remove('fa-pause');
+                    playIcon.classList.add('fa-play', 'translate-x-[1px]');
+                    playText.textContent = 'Play Music';
+                }
+            }
+
+            // Toggle Audio Playback
+            async function toggleMusic() {
+                if (isPlaying) {
+                    audioEl.pause();
+                    stopFallbackSynth();
+                    updateUI(false);
+                    return;
+                }
+
+                if (!usingFallbackSynth) {
+                    try {
+                        const playPromise = audioEl.play();
+                        if (playPromise !== undefined) {
+                            await playPromise;
+                            updateUI(true);
+                            return;
+                        }
+                    } catch (err) {
+                        startFallbackSynth();
+                        updateUI(true);
+                    }
+                } else {
+                    startFallbackSynth();
+                    updateUI(true);
+                }
+            }
+
+            audioEl.addEventListener('error', () => {
+                usingFallbackSynth = true;
+            });
+
+            playBtn.addEventListener('click', toggleMusic);
+
+            // Ambient Floating Particles Background
+            const canvas = document.getElementById('particles-canvas');
+            const ctx = canvas.getContext('2d');
+            let particles = [];
+
+            function resizeCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+
+            class AmbientParticle {
+                constructor() {
+                    this.reset();
+                }
+                reset() {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height;
+                    this.radius = Math.random() * 2.2 + 0.6;
+                    this.speedY = -(Math.random() * 0.4 + 0.15);
+                    this.speedX = (Math.random() - 0.5) * 0.3;
+                    this.alpha = Math.random() * 0.65 + 0.15;
+                    this.hue = Math.random() > 0.5 ? 345 : 280;
+                }
+                update() {
+                    const speedMultiplier = isPlaying ? 2.2 : 1;
+                    this.y += this.speedY * speedMultiplier;
+                    this.x += this.speedX * speedMultiplier;
+
+                    if (this.y < -10) {
+                        this.y = canvas.height + 10;
+                        this.x = Math.random() * canvas.width;
+                    }
+                }
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = `hsla(${this.hue}, 90%, 75%, ${this.alpha})`;
+                    ctx.shadowBlur = 10;
+                    ctx.shadowColor = `hsla(${this.hue}, 90%, 70%, 0.8)`;
+                    ctx.fill();
+                }
+            }
+
+            function initParticles() {
+                particles = [];
+                const count = window.innerWidth < 640 ? 35 : 60;
+                for (let i = 0; i < count; i++) {
+                    particles.push(new AmbientParticle());
+                }
+            }
+
+            function animateCanvas() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particles.forEach((p) => {
+                    p.update();
+                    p.draw();
+                });
+                requestAnimationFrame(animateCanvas);
+            }
+
+            window.onload = function () {
+                initParticles();
+                animateCanvas();
+            };
+        })();
+    </script>
+</body>
+</html>
